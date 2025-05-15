@@ -1,0 +1,11 @@
+config BR2_PACKAGE_RTW88
+        bool "rtw88"
+	depends on BR2_LINUX_KERNEL
+        help
+          Backport of RTW88 drivers for Realtek RTW88 wireless
+          controllers.
+
+          https://github.com/lwfinger/rtw88
+
+comment "rtw88 needs a linux kernel to be built"
+        depends on !BR2_LINUX_KERNEL
