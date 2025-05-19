@@ -1,1 +1,2 @@
 source "$BR2_EXTERNAL_WFB_PATH/package/rtw88/Config.in"
+source "$BR2_EXTERNAL_WFB_PATH/package/wfbya/Config.in"

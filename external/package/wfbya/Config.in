@@ -1,0 +1,7 @@
+config BR2_PACKAGE_WFBYA
+        bool "wfbya"
+        depends on BR2_LINUX_KERNEL
+        help
+          A Wi-Fi Broadcaast Client for Multicast.
+
+          https://github.com/hsuenaga/wfb-ya
