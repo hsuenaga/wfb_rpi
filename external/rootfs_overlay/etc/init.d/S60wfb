@@ -1,0 +1,63 @@
+#!/bin/sh
+#
+# Starts wfb_listener
+#
+
+## wfb_listener -- WFB-NG based Rx and Multicast Tx
+## 
+## Synopsis:
+## 	wfb_listener [-w <dev>] [-e <dev>] [-a <addr>] [-p <port>] [-k <file>]
+## 	    [-l] [-m] [-n] [-d] [-h]
+## Options:
+## 	-w <dev> ... specify Wireless Rx device. default: wlan1
+## 	-e <dev> ... specify Ethernet Tx/Rx device. default: none
+## 	-a <addr> ... specify Multicast address . default: ff02::5742
+## 	-p <port> ... specify Multicast port . default: 5742
+## 	-k <file> ... specify cipher key. default: ./gs.key
+## 	-m ... use RFMonitor mode instead of Promiscous mode.
+## 	-n ... don't apply FEC decode.
+## 	-d ... enable debug output.
+## 	-h ... print help(this).
+## 
+## If tx device is not specified, the progaram decode the stream.
+
+
+start() {
+	WFB_ARGS="$WFB_ARGS -w wlan0 -e eth0 -a ff02::5742 -p 5742 -k /etc/gs.key"
+	WFB_EXEC="/usr/bin/wfb_listener"
+
+	printf "Starting WFB Listener: "
+	umask 077
+
+	start-stop-daemon -S -q -p /var/run/wfb_listner.pid -b \
+		--exec $WFB_EXEC -- $WFB_ARGS
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
+}
+
+stop() {
+	printf "Stopping WFB Listener: "
+	start-stop-daemon -K -q -p /var/run/wfb_listener.pid
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
+}
+
+restart() {
+	stop
+	start
+}
+
+case "$1" in
+  start)
+  	start
+	;;
+  stop)
+  	stop
+	;;
+  restart|reload)
+  	restart
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?
