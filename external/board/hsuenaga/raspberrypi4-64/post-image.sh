@@ -6,6 +6,10 @@ BOARD_DIR="$(dirname $0)"
 BOARD_NAME="$(basename ${BOARD_DIR})"
 GENIMAGE_CFG="${BOARD_DIR}/genimage-${BOARD_NAME}.cfg"
 GENIMAGE_TMP="${BUILD_DIR}/genimage.tmp"
+BOOT_DIR="${BINARIES_DIR}/boot"
+
+rm -rf ${BOOT_DIR}
+mkdir ${BOOT_DIR}
 
 # generate genimage from template if a board specific variant doesn't exists
 if [ ! -e "${GENIMAGE_CFG}" ]; then
@@ -14,10 +18,12 @@ if [ ! -e "${GENIMAGE_CFG}" ]; then
 
 	for i in "${BINARIES_DIR}"/*.dtb "${BINARIES_DIR}"/rpi-firmware/*; do
 		FILES+=( "${i#${BINARIES_DIR}/}" )
+		cp -r ${i} ${BOOT_DIR}
 	done
 
 	KERNEL=$(sed -n 's/^kernel=//p' "${BINARIES_DIR}/rpi-firmware/config.txt")
 	FILES+=( "${KERNEL}" )
+	cp ${BINARIES_DIR}/${KERNEL} ${BOOT_DIR}
 
 	BOOT_FILES=$(printf '\\t\\t\\t"%s",\\n' "${FILES[@]}")
 	sed "s|#BOOT_FILES#|${BOOT_FILES}|" "${BOARD_DIR}/genimage.cfg.in" \
