@@ -21,9 +21,22 @@
 ## 
 ## If tx device is not specified, the progaram decode the stream.
 
+WFB_WLAN="wlan1"
+WFB_ETH="eth0"
+WFB_CH="36"
+WFB_KEY="/etc/gs.key"
+WFB_ADDR="ff02::5742"
+WFB_PORT=5742
+
+prepare_interface() {
+	ip link set ${WFB_WLAN} down
+	iw dev ${WFB_WLAN} set type monitor
+	ip link set ${WFB_WLAN} up
+	iw dev ${WFB_WLAN} set channel ${WFB_CH}
+}
 
 start() {
-	WFB_ARGS="$WFB_ARGS -w wlan0 -e eth0 -a ff02::5742 -p 5742 -k /etc/gs.key"
+	WFB_ARGS="$WFB_ARGS -w $WFB_WLAN -e $WFB_ETH -a $WFB_ADDR -p $WFB_PORT -k $WFB_KEY"
 	WFB_EXEC="/usr/bin/wfb_listener"
 
 	printf "Starting WFB Listener: "
@@ -47,6 +60,7 @@ restart() {
 
 case "$1" in
   start)
+	prepare_interface
   	start
 	;;
   stop)

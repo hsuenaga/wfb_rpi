@@ -25,6 +25,10 @@ if [ ! -e "${GENIMAGE_CFG}" ]; then
 	FILES+=( "${KERNEL}" )
 	cp ${BINARIES_DIR}/${KERNEL} ${BOOT_DIR}
 
+	ROOTFS=${BINARIES_DIR}/rootfs.cpio.gz
+	FILE+=( "${ROOTFS#${BINARIES_DIR}/}" )
+	cp ${ROOTFS} ${BOOT_DIR}
+
 	BOOT_FILES=$(printf '\\t\\t\\t"%s",\\n' "${FILES[@]}")
 	sed "s|#BOOT_FILES#|${BOOT_FILES}|" "${BOARD_DIR}/genimage.cfg.in" \
 		> "${GENIMAGE_CFG}"
