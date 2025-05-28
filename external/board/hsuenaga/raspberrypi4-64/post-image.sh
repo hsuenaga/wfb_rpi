@@ -8,8 +8,12 @@ GENIMAGE_CFG="${BOARD_DIR}/genimage-${BOARD_NAME}.cfg"
 GENIMAGE_TMP="${BUILD_DIR}/genimage.tmp"
 BOOT_DIR="${BINARIES_DIR}/boot"
 
-rm -rf ${BOOT_DIR}
-mkdir ${BOOT_DIR}
+if [ ! -d ${BOOT_DIR} ]; then
+	mkdir -p ${BOOT_DIR}
+	mkdir -p ${BOOT_DIR}/etc
+	cp ${TARGET_DIR}/etc/gs.key ${BOOT_DIR}/etc
+	cp ${TARGET_DIR}/etc/hostname ${BOOT_DIR}/etc
+fi
 
 # generate genimage from template if a board specific variant doesn't exists
 if [ ! -e "${GENIMAGE_CFG}" ]; then
@@ -33,6 +37,12 @@ if [ ! -e "${GENIMAGE_CFG}" ]; then
 	sed "s|#BOOT_FILES#|${BOOT_FILES}|" "${BOARD_DIR}/genimage.cfg.in" \
 		> "${GENIMAGE_CFG}"
 fi
+
+#
+# Create boot.zip for initramfs sdcard
+#
+rm -f ${BOOT_DIR}.zip
+zip -9 -r ${BOOT_DIR}.zip ${BOOT_DIR}
 
 # Pass an empty rootpath. genimage makes a full copy of the given rootpath to
 # ${GENIMAGE_TMP}/root so passing TARGET_DIR would be a waste of time and disk

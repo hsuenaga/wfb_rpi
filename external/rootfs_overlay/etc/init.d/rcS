@@ -1,0 +1,39 @@
+#!/bin/sh
+
+#
+# Override hostname
+#
+if [ -f /boot/etc/hostname ]; then
+	cp /boot/etc/hostname /etc/hostname
+	hostname -F /etc/hostname
+fi
+
+if [ -f /boot/etc/gs.key ]; then
+	cp /boot/etc/gs.key /etc/gs.key
+	chmod 600 /etc/gs.key
+fi
+
+# Start all init scripts in /etc/init.d
+# executing them in numerical order.
+#
+for i in /etc/init.d/S??* ;do
+
+     # Ignore dangling symlinks (if any).
+     [ ! -f "$i" ] && continue
+
+     case "$i" in
+	*.sh)
+	    # Source shell script for speed.
+	    (
+		trap - INT QUIT TSTP
+		set start
+		. $i
+	    )
+	    ;;
+	*)
+	    # No sh extension, so fork subprocess.
+	    $i start
+	    ;;
+    esac
+done
+
