@@ -27,6 +27,7 @@ WFB_CH="36"
 WFB_KEY="/etc/gs.key"
 WFB_ADDR="ff02::5742"
 WFB_PORT=5742
+WFB_PID="/var/run/wfb_listener.pid"
 
 prepare_interface() {
 	ip link set ${WFB_WLAN} down
@@ -36,13 +37,13 @@ prepare_interface() {
 }
 
 start() {
-	WFB_ARGS="$WFB_ARGS -w $WFB_WLAN -e $WFB_ETH -a $WFB_ADDR -p $WFB_PORT -k $WFB_KEY"
+	WFB_ARGS="$WFB_ARGS -w $WFB_WLAN -E $WFB_ETH -a $WFB_ADDR -p $WFB_PORT -k $WFB_KEY -P $WFB_PID -D"
 	WFB_EXEC="/usr/bin/wfb_listener"
 
 	printf "Starting WFB Listener: "
 	umask 077
 
-	start-stop-daemon -S -q -p /var/run/wfb_listner.pid -b \
+	start-stop-daemon -S -q -p /var/run/wfb_listner.pid \
 		--exec $WFB_EXEC -- $WFB_ARGS
 	[ $? = 0 ] && echo "OK" || echo "FAIL"
 }
