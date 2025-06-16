@@ -28,6 +28,22 @@ if [ -f /boot/etc/gs.key ]; then
 	chmod 600 /etc/gs.key
 fi
 
+if [ -L /etc/dropbear \
+     -a "$(readlink /etc/dropbear)" = "/var/run/dropbear" ]; then
+	if rm -f /etc/dropbear > /dev/null 2>&1; then
+		mkdir -p /etc/dropbear
+	else
+		mkdir -p "$(readlink /etc/dropbear)"
+	fi
+fi
+
+for i in /boot/etc/dropbear/*_host_key; do
+	DROPBEAR_KEY=`basename ${i}`
+	DROPBEAR_DST="/etc/dropbear/${DROPBEAR_KEY}"
+	cp $i $DROPBEAR_DST
+	chmod 600 $DROPBEAR_DST
+done	
+
 # Start all init scripts in /etc/init.d
 # executing them in numerical order.
 #
