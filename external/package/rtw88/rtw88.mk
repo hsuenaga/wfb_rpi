@@ -3,7 +3,7 @@
 # rtw88
 #
 ################################################################################
-RTW88_VERSION = 461b696b51317ba4ca585a4ddb32f2e72cd4efc9
+RTW88_VERSION = b89af8cd40d9528b0cdb9a6251efe49d8a69bfc6
 RTW88_SITE = $(call github,lwfinger,rtw88,$(RTW88_VERSION))
 
 RTW88_LICENSE = GPL-2.0
