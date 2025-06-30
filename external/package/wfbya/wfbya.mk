@@ -3,7 +3,7 @@
 # wfbya
 #
 ################################################################################
-WFBYA_VERSION = 0a77c2337da818890ec4b234c1800590e91bc0a3
+WFBYA_VERSION = 30d74b9c2705b731b55c706c4a28d65eaf1fe428
 #WFBYA_SITE = $(call github,hsuenaga,wfb-ya,$(WFBYA_VERSION))
 WFBYA_SITE = https://github.com/hsuenaga/wfb-ya.git
 WFBYA_SITE_METHOD = git
